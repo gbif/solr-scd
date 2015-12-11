@@ -1,0 +1,70 @@
+/* Solr 5 service definition, it's used as a convenient way of managing Solr services from CDH Manager */
+{
+  "name" : "SOLR5",
+  "label" : "Solr5",
+  "description" : "Solr 5 is the popular, blazing-fast, open source enterprise search platform built on Apache Lucene™.",
+  "version" : "5.3.1",
+  "runAs" : {
+    "user" : "solr",
+    "group" : "solr"
+  },
+  "inExpressWizard" : true,
+  "icon" : "images/solr.ico",
+  "serviceDependencies" : [
+    {
+      "name" : "HDFS",
+      "required" : "false"
+    },
+    {
+      "name" : "ZOOKEEPER",
+      "required" : "false"
+    }
+  ],
+  "rolesWithExternalLinks" : ["SOLR5_SERVER"],
+  "roles" : [
+    {
+      "name" : "SOLR5_SERVER",
+      "label" : "Solr5",
+      "pluralLabel" : "Solrs5",
+      "startRunner" : {
+        "program" : "scripts/control.sh",
+        "args" : ["start"]
+      },
+      "externalLink" : {
+        "name" : "solr_web_ui",
+        "label" : "Solr Web UI",
+        "url" : "http://${host}:${solr_port}/solr"
+      },
+      "topology" : { "minInstances" : 1, "maxInstances" : 1 },
+      "logging" : {
+         "dir" : "/var/solr/logs",
+         "filename" : "solr.log",
+         "modifiable" : true,
+         "loggingType" : "other"
+      },
+      "parameters" : [
+        {
+          "name" : "solr_port",
+          "label" : "Solr port",
+          "description" : "Solr Port number",
+          "required" : "true",
+          "type" : "port",
+          "default" : 8983,
+          "configurableInWizard" : true
+        }
+      ]
+    }
+  ],
+  "stopRunner" : {
+    "relevantRoleTypes" : ["SOLR5_SERVER"],
+    "runner" : {
+      "program" : "scripts/control.sh",
+      "args" : ["stop"],
+      "environmentVariables" : {
+         "SOLR_PORT" : "${solr_port}"
+      }
+    },
+    "timeout" : 60000,
+    "masterRole" : "SOLR5_SERVER"
+  }
+}
