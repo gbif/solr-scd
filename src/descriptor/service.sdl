@@ -5,11 +5,21 @@
   "description" : "Solr 5 is the popular, blazing-fast, open source enterprise search platform built on Apache Lucene™.",
   "version" : "5.3.1",
   "runAs" : {
-    "user" : "solr",
-    "group" : "solr"
+    "user" : "root",
+    "group" : "root"
   },
   "inExpressWizard" : true,
   "icon" : "images/solr.ico",
+  "compatibility" : {
+    "generation" : 2,
+    "cdhVersion" : {
+      "min" : 4,
+      "max" : 5
+    }
+  },
+  "parcel" : {
+    "requiredTags" : [ "solr5" ]
+  },
   "serviceDependencies" : [
     {
       "name" : "HDFS",
@@ -28,7 +38,12 @@
       "pluralLabel" : "Solrs5",
       "startRunner" : {
         "program" : "scripts/control.sh",
-        "args" : ["start"]
+        "args" : ["start"],
+        "environmentVariables" : {
+           "SOLR_PORT" : "${solr_port}",
+           "SOLR_SERVICE" : "${solr_service_name}",
+           "SOLR_USER" : "${solr_user}"
+        }
       },
       "externalLink" : {
         "name" : "solr_web_ui",
@@ -40,7 +55,7 @@
          "dir" : "/var/solr/logs",
          "filename" : "solr.log",
          "modifiable" : true,
-         "loggingType" : "other"
+         "loggingType" : "log4j"
       },
       "parameters" : [
         {
@@ -50,6 +65,24 @@
           "required" : "true",
           "type" : "port",
           "default" : 8983,
+          "configurableInWizard" : true
+        },
+        {
+          "name" : "solr_service_name",
+          "label" : "Solr service name",
+          "description" : "Solr service name",
+          "required" : "true",
+          "type" : "string",
+          "default" : "solr",
+          "configurableInWizard" : true
+        },
+        {
+          "name" : "solr_user",
+          "label" : "Solr user",
+          "description" : "User that runs the Solr process",
+          "required" : "true",
+          "type" : "string",
+          "default" : "solr",
           "configurableInWizard" : true
         }
       ]
@@ -61,7 +94,8 @@
       "program" : "scripts/control.sh",
       "args" : ["stop"],
       "environmentVariables" : {
-         "SOLR_PORT" : "${solr_port}"
+         "SOLR_PORT" : "${solr_port}",
+         "SOLR_SERVICE" : "${solr_service_name}"
       }
     },
     "timeout" : 60000,
