@@ -3,7 +3,7 @@
   "name" : "SOLR5",
   "label" : "Solr5",
   "description" : "Solr 5 is the popular, blazing-fast, open source enterprise search platform built on Apache Lucene™.",
-  "version" : "5.3.1",
+  "version" : "5.4.1",
   "runAs" : {
     "user" : "root",
     "group" : "root"
